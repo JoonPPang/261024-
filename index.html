@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>디지털 시민 퀴즈 챔피언</title>
+  <style>
+    /* ==========================================================================
+       퀴즈 챔피언 — 디자인 시스템 & 테마 스타일
+       어린이 친화적 아케이드 퀴즈쇼 테마 (외부 에셋 없음, 100% 자립형)
+       ========================================================================== */
+    :root {
+      --bg-primary: #f0f4fd;
+      --bg-card: #ffffff;
+      --primary: #5c3cf6;
+      --primary-hover: #4829e0;
+      --primary-light: #ece9ff;
+      --secondary: #ffb703;
+      --secondary-dark: #fb8500;
+      --accent-coral: #ff5964;
+      --accent-green: #06d6a0;
+      --accent-green-dark: #059669;
+      --accent-blue: #3a86ff;
+      --text-main: #1e1b4b;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --border-color: #e2e8f0;
+      --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.07);
+      --shadow-md: 0 10px 15px -3px rgba(92, 60, 246, 0.12), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 20px 25px -5px rgba(92, 60, 246, 0.18), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      --radius-sm: 12px;
+      --radius-md: 18px;
+      --radius-lg: 24px;
+      --radius-full: 9999px;
+      --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-primary);
+      background-image: 
+        radial-gradient(#c7d2fe 1.5px, transparent 1.5px),
+        radial-gradient(#e0e7ff 1.5px, var(--bg-primary) 1.5px);
+      background-size: 40px 40px;
+      background-position: 0 0, 20px 20px;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* 화면 전환 제어 */
+    .screen {
+      width: 100%;
+      max-width: 1020px;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .screen[hidden] {
+      display: none !important;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 카드 컨테이너 */
+    .game-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      box-shadow: var(--shadow-lg);
+      border: 3px solid #e0e7ff;
+      position: relative;
+    }
+
+    /* 타이포그래피 & 배지 */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: -0.2px;
+    }
+
+    .badge-primary { background: var(--primary-light); color: var(--primary); }
+    .badge-gold { background: #fef3c7; color: #b45309; }
+    .badge-green { background: #d1fae5; color: #047857; }
+    .badge-coral { background: #ffe4e6; color: #be123c; }
+
+    /* ==========================================================================
+       버튼 컴포넌트
+       ========================================================================== */
+    .btn-game {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-family: inherit;
+      font-size: 19px;
+      font-weight: 800;
+      padding: 16px 32px;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.12s ease-in-out;
+      user-select: none;
+      min-height: 56px;
+      box-shadow: 0 6px 0 rgba(0, 0, 0, 0.15);
+      text-decoration: none;
+    }
+
+    .btn-game:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 0 rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-game:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6d4aff, #512bd4);
+      color: #ffffff;
+      box-shadow: 0 6px 0 #3a1da3;
+    }
+    .btn-primary:hover {
+      box-shadow: 0 8px 0 #3a1da3;
+    }
+    .btn-primary:active {
+      box-shadow: 0 2px 0 #3a1da3;
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: var(--text-main);
+      box-shadow: 0 6px 0 #cbd5e1;
+    }
+    .btn-secondary:hover {
+      background: #e2e8f0;
+      box-shadow: 0 8px 0 #94a3b8;
+    }
+    .btn-secondary:active {
+      box-shadow: 0 2px 0 #94a3b8;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #ffc107, #f59e0b);
+      color: #78350f;
+      box-shadow: 0 6px 0 #b45309;
+    }
+    .btn-gold:hover {
+      box-shadow: 0 8px 0 #b45309;
+    }
+    .btn-gold:active {
+      box-shadow: 0 2px 0 #b45309;
+    }
+
+    /* ==========================================================================
+       [1] 시작 화면 (Intro)
+       ========================================================================== */
+    .intro-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .intro-title {
+      font-size: 38px;
+      font-weight: 900;
+      color: var(--primary);
+      margin: 12px 0 8px;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 4px rgba(92, 60, 246, 0.15);
+    }
+
+    .intro-desc {
+      font-size: 18px;
+      color: var(--text-muted);
+      font-weight: 500;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .intro-content {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 32px;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .mascot-box {
+      background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed #c4b5fd;
+    }
+
+    .mascot-svg {
+      width: 170px;
+      height: 170px;
+      filter: drop-shadow(0 8px 12px rgba(92, 60, 246, 0.15));
+      transition: transform 0.25s ease;
+    }
+
+    .mascot-name {
+      margin-top: 10px;
+      font-weight: 800;
+      font-size: 15px;
+      color: var(--primary);
+      background: #ffffff;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .intro-form-panel {
+      background: #f8fafc;
+      border-radius: var(--radius-md);
+      padding: 24px;
+      border: 2px solid #e2e8f0;
+    }
+
+    .form-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .input-label {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .input-label .required {
+      color: var(--accent-coral);
+    }
+
+    .game-input {
+      font-family: inherit;
+      font-size: 20px;
+      font-weight: 700;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      border: 2.5px solid #cbd5e1;
+      background: #ffffff;
+      color: var(--text-main);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .game-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(92, 60, 246, 0.2);
+    }
+
+    .game-input.has-error {
+      border-color: var(--accent-coral);
+      background-color: #fff1f2;
+    }
+
+    .input-error {
+      font-size: 13px;
+      font-weight: 700;
+      color: #be123c;
+      min-height: 18px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .rules-card {
+      background: #eff6ff;
+      border: 1.5px solid #bfdbfe;
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 14px;
+      color: #1e40af;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .rules-card strong {
+      color: #1d4ed8;
+    }
+
+    .btn-start {
+      width: 100%;
+      font-size: 22px;
+      padding: 18px;
+    }
+
+    /* ==========================================================================
+       [2] 퀴즈 화면 (HUD, 문제, 선택지, 피드백)
+       ========================================================================== */
+    .hud-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 12px 20px;
+      margin-bottom: 24px;
+    }
+
+    .hud-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hud-student {
+      font-weight: 800;
+      font-size: 15px;
+      background: #e0e7ff;
+      color: var(--primary);
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      border: 1px solid #c7d2fe;
+    }
+
+    .hud-progress-text {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .hud-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hud-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 15px;
+      font-weight: 800;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .hud-score {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1.5px solid #fde68a;
+    }
+
+    .hud-combo {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1.5px solid #fecaca;
+    }
+
+    .hud-combo.active-combo {
+      animation: comboPulse 0.6s infinite alternate;
+      background: linear-gradient(135deg, #ffedd5, #fee2e2);
+      border-color: #f97316;
+      color: #c2410c;
+    }
+
+    @keyframes comboPulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.06); }
+    }
+
+    .hud-level {
+      background: #dcfce7;
+      color: #166534;
+      border: 1.5px solid #bbf7d0;
+    }
+
+    /* 진행도 바 */
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #a855f7);
+      width: 10%;
+      border-radius: var(--radius-full);
+      transition: width 0.3s ease;
+    }
+
+    /* 문제 카드 영역 */
+    .question-section {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .question-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .question-text {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.45;
+      word-break: keep-all;
+    }
+
+    /* 4지선다 옵션 그리드 */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .btn-option {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      border: 2.5px solid #cbd5e1;
+      background: #ffffff;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 19px;
+      font-weight: 700;
+      cursor: pointer;
+      position: relative;
+      min-height: 72px;
+      box-shadow: 0 5px 0 #cbd5e1;
+      transition: all 0.12s ease-in-out;
+      word-break: keep-all;
+    }
+
+    .btn-option:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 0 #94a3b8;
+      border-color: #94a3b8;
+    }
+
+    .btn-option:active:not(:disabled) {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #94a3b8;
+    }
+
+    .btn-option:disabled {
+      cursor: default;
+    }
+
+    .option-badge {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 16px;
+      color: #ffffff;
+      background: #64748b;
+    }
+
+    /* 선택지별 시그니처 색상 (기본) */
+    .opt-0 .option-badge { background: #ff5964; }
+    .opt-1 .option-badge { background: #3a86ff; }
+    .opt-2 .option-badge { background: #f59e0b; }
+    .opt-3 .option-badge { background: #10b981; }
+
+    .option-label {
+      flex: 1;
+      line-height: 1.35;
+    }
+
+    .option-status-icon {
+      font-size: 22px;
+      display: none;
+    }
+
+    /* 선택된 정답/오답 스타일 */
+    .btn-option.is-correct {
+      background: #ecfdf5 !important;
+      border-color: #059669 !important;
+      box-shadow: 0 5px 0 #047857 !important;
+      color: #065f46 !important;
+    }
+    .btn-option.is-correct .option-badge {
+      background: #059669 !important;
+    }
+    .btn-option.is-correct .option-status-icon {
+      display: inline-block;
+    }
+
+    .btn-option.is-wrong {
+      background: #fff1f2 !important;
+      border-color: #e11d48 !important;
+      box-shadow: 0 5px 0 #be123c !important;
+      color: #9f1239 !important;
+    }
+    .btn-option.is-wrong .option-badge {
+      background: #e11d48 !important;
+    }
+    .btn-option.is-wrong .option-status-icon {
+      display: inline-block;
+    }
+
+    .btn-option.is-correct-target {
+      border-color: #059669 !important;
+      background: #f0fdf4 !important;
+      box-shadow: 0 5px 0 #10b981 !important;
+    }
+    .btn-option.is-correct-target .option-badge {
+      background: #059669 !important;
+    }
+
+    /* 피드백 패널 */
+    .feedback-panel {
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      animation: slideUp 0.25s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .feedback-panel.correct {
+      background: #ecfdf5;
+      border: 2.5px solid #a7f3d0;
+    }
+
+    .feedback-panel.wrong {
+      background: #fff7ed;
+      border: 2.5px solid #fed7aa;
+    }
+
+    .feedback-content {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex: 1;
+    }
+
+    .feedback-mascot-svg {
+      width: 72px;
+      height: 72px;
+      flex-shrink: 0;
+    }
+
+    .feedback-texts {
+      flex: 1;
+    }
+
+    .feedback-title {
+      font-size: 20px;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    .feedback-panel.correct .feedback-title {
+      color: #065f46;
+    }
+
+    .feedback-panel.wrong .feedback-title {
+      color: #9a3412;
+    }
+
+    .feedback-explanation {
+      font-size: 15px;
+      color: var(--text-main);
+      line-height: 1.45;
+      word-break: keep-all;
+    }
+
+    .btn-next {
+      flex-shrink: 0;
+      min-width: 160px;
+      font-size: 18px;
+    }
+
+    /* ==========================================================================
+       [3] 결과 화면 (Result)
+       ========================================================================== */
+    .result-container {
+      text-align: center;
+    }
+
+    .result-header {
+      margin-bottom: 24px;
+    }
+
+    .result-student-tag {
+      display: inline-block;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      margin-bottom: 12px;
+    }
+
+    .result-title {
+      font-size: 34px;
+      font-weight: 900;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .grade-display {
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 28px;
+      border: 3px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .trophy-svg {
+      width: 140px;
+      height: 140px;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 10px 15px rgba(245, 158, 11, 0.25));
+    }
+
+    .grade-name {
+      font-size: 32px;
+      font-weight: 900;
+      color: #b45309;
+      margin-bottom: 6px;
+    }
+
+    .grade-desc {
+      font-size: 16px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* 결과 지표 그리드 */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 18px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stat-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--text-main);
+    }
+
+    .stat-sub {
+      font-size: 13px;
+      color: var(--text-light);
+      font-weight: 600;
+    }
+
+    /* 전송 상태 표시 */
+    .submission-status-box {
+      margin-bottom: 20px;
+      min-height: 24px;
+    }
+
+    .submission-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: var(--radius-full);
+    }
+
+    .submission-pill.submitting {
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
+    .submission-pill.success {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .submission-pill.error {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ==========================================================================
+       [4] 오답 복습 화면 (Review)
+       ========================================================================== */
+    .review-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .review-title {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--text-main);
+    }
+
+    .review-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 28px;
+      max-height: 60vh;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+
+    .review-item {
+      background: #ffffff;
+      border: 2px solid #fed7aa;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      text-align: left;
+    }
+
+    .review-q-num {
+      font-size: 14px;
+      font-weight: 800;
+      color: #c2410c;
+      margin-bottom: 6px;
+    }
+
+    .review-q-text {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .review-answer-box {
+      background: #f8fafc;
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 15px;
+      margin-bottom: 10px;
+    }
+
+    .review-row-wrong {
+      color: #be123c;
+      font-weight: 700;
+    }
+
+    .review-row-correct {
+      color: #047857;
+      font-weight: 700;
+    }
+
+    .review-explanation {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.45;
+      padding-left: 4px;
+    }
+
+    .review-empty {
+      text-align: center;
+      padding: 40px 20px;
+      background: #ecfdf5;
+      border-radius: var(--radius-md);
+      border: 2px dashed #a7f3d0;
+      color: #065f46;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    /* ==========================================================================
+       반응형 디자인 (태블릿, 모바일)
+       ========================================================================== */
+    @media (max-width: 820px) {
+      .game-card {
+        padding: 24px 18px;
+      }
+      .intro-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .mascot-box {
+        padding: 16px;
+      }
+      .mascot-svg {
+        width: 130px;
+        height: 130px;
+      }
+      .question-text {
+        font-size: 22px;
+      }
+      .options-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .feedback-panel {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .btn-next {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 8px;
+      }
+      .game-card {
+        padding: 20px 14px;
+        border-radius: var(--radius-md);
+      }
+      .intro-title {
+        font-size: 28px;
+      }
+      .input-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .hud-bar {
+        padding: 10px 14px;
+        font-size: 13px;
+      }
+      .hud-badge {
+        font-size: 13px;
+        padding: 4px 10px;
+      }
+      .question-text {
+        font-size: 19px;
+      }
+      .btn-option {
+        font-size: 16px;
+        padding: 14px 16px;
+      }
+      .result-title {
+        font-size: 26px;
+      }
+      .trophy-svg {
+        width: 100px;
+        height: 100px;
+      }
+      .grade-name {
+        font-size: 26px;
+      }
+    }
+
+    /* 접근성: 애니메이션 감소 모드 */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       [화면 1] 인트로 / 시작 화면 (반·번호 필수 입력)
+       ======================================================================== -->
+  <main id="screen-intro" class="screen">
+    <div class="game-card">
+      <header class="intro-header">
+        <span class="badge badge-primary">✨ 초등학교 3~4학년 퀴즈</span>
+        <h1 class="intro-title" id="quiz-title-display">디지털 시민 퀴즈 챔피언</h1>
+        <p class="intro-desc" id="quiz-desc-display">온라인에서 배려하고 안전하게 행동하는 멋진 디지털 시민이 되어보아요!</p>
+      </header>
+
+      <div class="intro-content">
+        <!-- 인라인 SVG 오리지널 마스코트: 치치(Chichi) -->
+        <div class="mascot-box">
+          <svg class="mascot-svg" id="intro-mascot-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="퀴즈 마스코트 치치">
+            <!-- 몸체 (부드러운 노란 병아리/별 챔피언) -->
+            <ellipse cx="100" cy="115" rx="65" ry="60" fill="#FFD166"/>
+            <ellipse cx="100" cy="118" rx="55" ry="50" fill="#FFE382"/>
+            <!-- 볼 터치 -->
+            <ellipse cx="65" cy="120" rx="10" ry="7" fill="#FFAAA6" opacity="0.8"/>
+            <ellipse cx="135" cy="120" rx="10" ry="7" fill="#FFAAA6" opacity="0.8"/>
+            <!-- 왕관 -->
+            <path d="M70 65 L82 85 L100 55 L118 85 L130 65 L125 95 L75 95 Z" fill="#FFB703" stroke="#FB8500" stroke-width="3" stroke-linejoin="round"/>
+            <circle cx="100" cy="53" r="5" fill="#FF5964"/>
+            <circle cx="70" cy="63" r="4" fill="#3A86FF"/>
+            <circle cx="130" cy="63" r="4" fill="#06D6A0"/>
+            <!-- 눈 (기본 방긋 웃는 눈) -->
+            <path d="M68 106 Q78 98 88 106" stroke="#2B2D42" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+            <path d="M112 106 Q122 98 132 106" stroke="#2B2D42" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+            <!-- 부리 -->
+            <path d="M94 116 Q100 126 106 116 Z" fill="#FB8500"/>
+            <!-- 손/날개 인사 -->
+            <path d="M42 120 Q30 100 45 90 Q55 105 48 125 Z" fill="#FFD166" stroke="#FB8500" stroke-width="2"/>
+            <path d="M158 120 Q170 125 162 135 Q150 135 152 122 Z" fill="#FFD166" stroke="#FB8500" stroke-width="2"/>
+            <!-- 발 -->
+            <ellipse cx="80" cy="172" rx="12" ry="6" fill="#FB8500"/>
+            <ellipse cx="120" cy="172" rx="12" ry="6" fill="#FB8500"/>
+          </svg>
+          <div class="mascot-name">마스코트 치치</div>
+        </div>
+
+        <!-- 반/번호 입력 폼 -->
+        <section class="intro-form-panel">
+          <h2 class="form-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            참가자 정보 입력
+          </h2>
+
+          <div class="input-row">
+            <div class="input-group">
+              <label for="input-class" class="input-label">반 <span class="required">*</span></label>
+              <input type="number" id="input-class" class="game-input" placeholder="예: 3" min="1" max="99" inputmode="numeric" autocomplete="off">
+              <div id="error-class" class="input-error" role="alert"></div>
+            </div>
+            <div class="input-group">
+              <label for="input-number" class="input-label">번호 <span class="required">*</span></label>
+              <input type="number" id="input-number" class="game-input" placeholder="예: 12" min="1" max="99" inputmode="numeric" autocomplete="off">
+              <div id="error-number" class="input-error" role="alert"></div>
+            </div>
+          </div>
+
+          <div class="rules-card">
+            <strong>🎯 게임 규칙:</strong> 총 10문제 | 정답당 100점 + 2연속부터 콤보 보너스! | 레벨 성장과 최종 챔피언 등급에 도전해 보세요!
+          </div>
+
+          <button type="button" id="btn-start" class="btn-game btn-primary btn-start">
+            게임 시작 🚀
+          </button>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       [화면 2] 퀴즈 진행 화면 (문제 + 4지선다 + 피드백)
+       ======================================================================== -->
+  <main id="screen-quiz" class="screen" hidden>
+    <div class="game-card">
+      <!-- 상단 게임 HUD -->
+      <div class="hud-bar">
+        <div class="hud-left">
+          <span class="hud-student" id="hud-student">0반 0번</span>
+          <span class="hud-progress-text">문제 <strong id="hud-current-num">1</strong> / <span id="hud-total-num">10</span></span>
+        </div>
+        <div class="hud-right">
+          <span class="hud-badge hud-score">🏆 <span id="hud-score">0</span>점</span>
+          <span class="hud-badge hud-combo" id="hud-combo-badge">🔥 COMBO <span id="hud-combo">0</span></span>
+          <span class="hud-badge hud-level" id="hud-level-badge">⭐ <span id="hud-level">Lv.1</span></span>
+        </div>
+      </div>
+
+      <!-- 진행률 바 -->
+      <div class="progress-track" aria-label="퀴즈 진행률">
+        <div class="progress-fill" id="progress-fill" style="width: 10%;"></div>
+      </div>
+
+      <!-- 질문 카드 -->
+      <section class="question-section">
+        <div class="question-meta">
+          <span class="badge badge-gold" id="question-badge">문제 1</span>
+        </div>
+        <h2 class="question-text" id="question-text">문제가 여기에 표시됩니다.</h2>
+      </section>
+
+      <!-- 4지선다 보기 버튼 (데스크톱 2x2, 모바일 1열) -->
+      <div class="options-grid" id="options-grid" role="group" aria-label="객관식 보기">
+        <button type="button" class="btn-option opt-0" data-index="0">
+          <span class="option-badge">A</span>
+          <span class="option-label" id="opt-text-0">보기 1</span>
+          <span class="option-status-icon"></span>
+        </button>
+        <button type="button" class="btn-option opt-1" data-index="1">
+          <span class="option-badge">B</span>
+          <span class="option-label" id="opt-text-1">보기 2</span>
+          <span class="option-status-icon"></span>
+        </button>
+        <button type="button" class="btn-option opt-2" data-index="2">
+          <span class="option-badge">C</span>
+          <span class="option-label" id="opt-text-2">보기 3</span>
+          <span class="option-status-icon"></span>
+        </button>
+        <button type="button" class="btn-option opt-3" data-index="3">
+          <span class="option-badge">D</span>
+          <span class="option-label" id="opt-text-3">보기 4</span>
+          <span class="option-status-icon"></span>
+        </button>
+      </div>
+
+      <!-- 정오답 피드백 패널 (답안 선택 후 노출) -->
+      <div id="feedback-panel" class="feedback-panel" hidden aria-live="polite">
+        <div class="feedback-content">
+          <!-- 마스코트 반응 표정 SVG -->
+          <svg class="feedback-mascot-svg" id="feedback-mascot-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- 동적 치치 표정 주입 -->
+          </svg>
+          <div class="feedback-texts">
+            <h3 class="feedback-title" id="feedback-title">정답입니다! +100점</h3>
+            <p class="feedback-explanation" id="feedback-explanation">해설 문구가 들어갑니다.</p>
+          </div>
+        </div>
+        <button type="button" id="btn-next" class="btn-game btn-primary btn-next">
+          다음 문제 ➔
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       [화면 3] 최종 결과 화면 (Result)
+       ======================================================================== -->
+  <main id="screen-result" class="screen" hidden>
+    <div class="game-card result-container">
+      <header class="result-header">
+        <div class="result-student-tag" id="result-student-tag">3반 12번의 퀴즈 결과</div>
+        <h1 class="result-title">퀴즈 완료! 멋진 도전이었어요!</h1>
+      </header>
+
+      <!-- 챔피언 등급 및 트로피 카드 -->
+      <div class="grade-display">
+        <svg class="trophy-svg" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- 트로피 몸통 -->
+          <path d="M45 40 L115 40 L105 90 Q80 115 55 90 Z" fill="url(#trophyGrad)" stroke="#d97706" stroke-width="3"/>
+          <!-- 손잡이 좌우 -->
+          <path d="M48 50 C25 50 25 75 48 80" stroke="#f59e0b" stroke-width="5" stroke-linecap="round" fill="none"/>
+          <path d="M112 50 C135 50 135 75 112 80" stroke="#f59e0b" stroke-width="5" stroke-linecap="round" fill="none"/>
+          <!-- 기둥 & 받침 -->
+          <rect x="73" y="105" width="14" height="20" fill="#d97706"/>
+          <path d="M50 125 L110 125 L115 142 L45 142 Z" fill="#78350f" rx="3"/>
+          <rect x="55" y="129" width="50" height="8" rx="2" fill="#fde68a"/>
+          <!-- 반짝임 별 -->
+          <path d="M80 55 L83 67 L95 70 L83 73 L80 85 L77 73 L65 70 L77 67 Z" fill="#ffffff"/>
+          <circle cx="120" cy="35" r="4" fill="#fbbf24"/>
+          <circle cx="40" cy="35" r="3" fill="#fbbf24"/>
+          <defs>
+            <linearGradient id="trophyGrad" x1="45" y1="40" x2="115" y2="105" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FDE047"/>
+              <stop offset="1" stop-color="#F59E0B"/>
+            </linearGradient>
+          </defs>
+        </svg>
+
+        <div class="grade-name" id="result-grade-name">챔피언</div>
+        <p class="grade-desc" id="result-grade-desc">모든 문제를 완벽하게 이해한 최고의 디지털 시민!</p>
+      </div>
+
+      <!-- 최종 점수 지표 -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-label">최종 점수</span>
+          <span class="stat-value" id="result-score" style="color: #4f46e5;">0점</span>
+          <span class="stat-sub">기본점 + 콤보 보너스</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">맞힌 문제</span>
+          <span class="stat-value" id="result-correct" style="color: #059669;">0 / 10</span>
+          <span class="stat-sub" id="result-accuracy">정답률 0%</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">최고 콤보</span>
+          <span class="stat-value" id="result-combo" style="color: #ea580c;">0연속</span>
+          <span class="stat-sub">연속 정답 기록</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">최종 레벨</span>
+          <span class="stat-value" id="result-level" style="color: #7c3aed;">Lv.1</span>
+          <span class="stat-sub">성장 레벨 달성</span>
+        </div>
+      </div>
+
+      <!-- 제출 상태 표시창 (SUBMISSION_ENDPOINT 설정 시에만 상태 표기) -->
+      <div class="submission-status-box" id="submission-status-box"></div>
+
+      <!-- 하단 액션 버튼 -->
+      <div class="result-actions">
+        <button type="button" id="btn-review" class="btn-game btn-secondary">
+          틀린 문제 다시 보기 🔍
+        </button>
+        <button type="button" id="btn-restart" class="btn-game btn-primary">
+          처음부터 다시 하기 🔄
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       [화면 4] 틀린 문제 오답 복습 화면 (Review)
+       ======================================================================== -->
+  <main id="screen-review" class="screen" hidden>
+    <div class="game-card">
+      <header class="review-header">
+        <h1 class="review-title">📝 오답 복습하기</h1>
+        <button type="button" id="btn-review-back" class="btn-game btn-secondary" style="font-size: 16px; padding: 10px 20px; min-height: 46px;">
+          결과로 돌아가기 ➔
+        </button>
+      </header>
+
+      <div class="review-list" id="review-list">
+        <!-- 동적으로 틀린 문제 항목 생성 -->
+      </div>
+
+      <div style="text-align: center; margin-top: 16px;">
+        <button type="button" id="btn-restart-from-review" class="btn-game btn-primary">
+          처음부터 다시 하기 🔄
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       스크립트 로드 순서: questions.js -> submit.js -> 화면 바인딩 스크립트
+       ======================================================================== -->
+  <script src="questions.js"></script>
+  <script src="submit.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      // --- 세션 인스턴스 생성 ---
+      const session = new window.QuizSession();
+
+      // --- DOM 요소 캐싱 ---
+      const screens = {
+        intro: document.getElementById('screen-intro'),
+        quiz: document.getElementById('screen-quiz'),
+        result: document.getElementById('screen-result'),
+        review: document.getElementById('screen-review')
+      };
+
+      // 인트로 입력 폼
+      const inputClass = document.getElementById('input-class');
+      const inputNumber = document.getElementById('input-number');
+      const errorClass = document.getElementById('error-class');
+      const errorNumber = document.getElementById('error-number');
+      const btnStart = document.getElementById('btn-start');
+      const quizTitleDisplay = document.getElementById('quiz-title-display');
+      const quizDescDisplay = document.getElementById('quiz-desc-display');
+
+      // 퀴즈 HUD
+      const hudStudent = document.getElementById('hud-student');
+      const hudCurrentNum = document.getElementById('hud-current-num');
+      const hudTotalNum = document.getElementById('hud-total-num');
+      const hudScore = document.getElementById('hud-score');
+      const hudComboBadge = document.getElementById('hud-combo-badge');
+      const hudCombo = document.getElementById('hud-combo');
+      const hudLevelBadge = document.getElementById('hud-level-badge');
+      const hudLevel = document.getElementById('hud-level');
+      const progressFill = document.getElementById('progress-fill');
+
+      // 문항 및 보기
+      const questionBadge = document.getElementById('question-badge');
+      const questionText = document.getElementById('question-text');
+      const optionsGrid = document.getElementById('options-grid');
+      const optionButtons = [
+        document.querySelector('.opt-0'),
+        document.querySelector('.opt-1'),
+        document.querySelector('.opt-2'),
+        document.querySelector('.opt-3')
+      ];
+
+      // 피드백 패널
+      const feedbackPanel = document.getElementById('feedback-panel');
+      const feedbackMascotSvg = document.getElementById('feedback-mascot-svg');
+      const feedbackTitle = document.getElementById('feedback-title');
+      const feedbackExplanation = document.getElementById('feedback-explanation');
+      const btnNext = document.getElementById('btn-next');
+
+      // 결과 화면
+      const resultStudentTag = document.getElementById('result-student-tag');
+      const resultGradeName = document.getElementById('result-grade-name');
+      const resultGradeDesc = document.getElementById('result-grade-desc');
+      const resultScore = document.getElementById('result-score');
+      const resultCorrect = document.getElementById('result-correct');
+      const resultAccuracy = document.getElementById('result-accuracy');
+      const resultCombo = document.getElementById('result-combo');
+      const resultLevel = document.getElementById('result-level');
+      const submissionStatusBox = document.getElementById('submission-status-box');
+      const btnReview = document.getElementById('btn-review');
+      const btnRestart = document.getElementById('btn-restart');
+
+      // 복습 화면
+      const reviewList = document.getElementById('review-list');
+      const btnReviewBack = document.getElementById('btn-review-back');
+      const btnRestartFromReview = document.getElementById('btn-restart-from-review');
+
+      // --- 화면 전환 헬퍼 ---
+      function showScreen(name) {
+        Object.keys(screens).forEach(key => {
+          if (key === name) {
+            screens[key].removeAttribute('hidden');
+          } else {
+            screens[key].setAttribute('hidden', '');
+          }
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // --- 인라인 SVG 마스코트 표정 렌더러 ---
+      function getMascotSvgContent(expression) {
+        if (expression === 'happy') {
+          // 정답: 활짝 웃는 눈, 양팔 번쩍, 반짝이 별
+          return `
+            <ellipse cx="50" cy="58" rx="35" ry="32" fill="#FFD166"/>
+            <ellipse cx="50" cy="60" rx="30" ry="27" fill="#FFE382"/>
+            <ellipse cx="30" cy="62" rx="6" ry="4" fill="#FFAAA6"/>
+            <ellipse cx="70" cy="62" rx="6" ry="4" fill="#FFAAA6"/>
+            <!-- 눈: 행복한 초승달 눈 -->
+            <path d="M32 52 Q38 45 44 52" stroke="#2B2D42" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <path d="M56 52 Q62 45 68 52" stroke="#2B2D42" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <!-- 크게 벌린 웃는 입 -->
+            <path d="M44 58 Q50 68 56 58 Z" fill="#FB8500"/>
+            <!-- 양팔 만세 -->
+            <path d="M20 54 Q12 38 22 36 Q28 46 22 56 Z" fill="#FFD166" stroke="#FB8500" stroke-width="1.5"/>
+            <path d="M80 54 Q88 38 78 36 Q72 46 78 56 Z" fill="#FFD166" stroke="#FB8500" stroke-width="1.5"/>
+            <!-- 반짝이 별 -->
+            <path d="M50 16 L52 23 L59 25 L52 27 L50 34 L48 27 L41 25 L48 23 Z" fill="#FFB703"/>
+            <circle cx="20" cy="24" r="2.5" fill="#3A86FF"/>
+            <circle cx="80" cy="24" r="2.5" fill="#06D6A0"/>
+          `;
+        } else {
+          // 오답: 따뜻한 응원 눈, 볼터치, 엄지 척 / 다독임 손
+          return `
+            <ellipse cx="50" cy="58" rx="35" ry="32" fill="#FFD166"/>
+            <ellipse cx="50" cy="60" rx="30" ry="27" fill="#FFE382"/>
+            <ellipse cx="30" cy="62" rx="6" ry="4" fill="#FFAAA6"/>
+            <ellipse cx="70" cy="62" rx="6" ry="4" fill="#FFAAA6"/>
+            <!-- 눈: 부드럽고 다정한 깜빡임 -->
+            <circle cx="38" cy="52" r="3.5" fill="#2B2D42"/>
+            <circle cx="62" cy="52" r="3.5" fill="#2B2D42"/>
+            <circle cx="39" cy="50" r="1.2" fill="#ffffff"/>
+            <circle cx="63" cy="50" r="1.2" fill="#ffffff"/>
+            <!-- 작은 격려 미소 -->
+            <path d="M46 60 Q50 65 54 60" stroke="#FB8500" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <!-- 응원 손 -->
+            <path d="M22 62 Q15 60 18 52 Q26 55 24 64 Z" fill="#FFD166" stroke="#FB8500" stroke-width="1.5"/>
+            <path d="M78 62 Q85 58 82 50 Q74 54 76 64 Z" fill="#FFD166" stroke="#FB8500" stroke-width="1.5"/>
+          `;
+        }
+      }
+
+      // --- 초기 타이틀 및 안내 동기화 ---
+      if (window.QUIZ_DATA) {
+        if (quizTitleDisplay && window.QUIZ_DATA.title) {
+          quizTitleDisplay.textContent = window.QUIZ_DATA.title;
+        }
+        if (quizDescDisplay && window.QUIZ_DATA.description) {
+          quizDescDisplay.textContent = window.QUIZ_DATA.description;
+        }
+      }
+
+      // --- 시작 폼 실시간 유효성 검사 및 에러 클리어 ---
+      function clearErrors() {
+        errorClass.textContent = '';
+        errorNumber.textContent = '';
+        inputClass.classList.remove('has-error');
+        inputNumber.classList.remove('has-error');
+      }
+
+      inputClass.addEventListener('input', () => {
+        errorClass.textContent = '';
+        inputClass.classList.remove('has-error');
+      });
+
+      inputNumber.addEventListener('input', () => {
+        errorNumber.textContent = '';
+        inputNumber.classList.remove('has-error');
+      });
+
+      // 엔터 키 지원
+      [inputClass, inputNumber].forEach(input => {
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            btnStart.click();
+          }
+        });
+      });
+
+      // --- 게임 시작 버튼 핸들러 ---
+      btnStart.addEventListener('click', () => {
+        clearErrors();
+        const validation = window.validateStudentInfo(inputClass.value, inputNumber.value);
+
+        if (!validation.valid) {
+          if (validation.errors.class) {
+            errorClass.textContent = validation.errors.class;
+            inputClass.classList.add('has-error');
+            inputClass.focus();
+          } else if (validation.errors.number) {
+            errorNumber.textContent = validation.errors.number;
+            inputNumber.classList.add('has-error');
+            inputNumber.focus();
+          }
+          return;
+        }
+
+        // 유효한 경우 세션 초기화 및 시작
+        session.setStudent(validation.classNum, validation.studentNum);
+        startQuiz();
+      });
+
+      // --- 퀴즈 시작 ---
+      function startQuiz() {
+        session.currentQuestionIndex = 0;
+        session.score = 0;
+        session.combo = 0;
+        session.maxCombo = 0;
+        session.answers = [];
+        session.isAnswerLocked = false;
+        session.hasSubmitted = false;
+
+        const questions = (window.QUIZ_DATA && window.QUIZ_DATA.questions) || [];
+        hudTotalNum.textContent = questions.length;
+        hudStudent.textContent = session.getStudentTag();
+
+        renderQuestion();
+        showScreen('quiz');
+      }
+
+      // --- 문항 렌더링 ---
+      function renderQuestion() {
+        const questions = (window.QUIZ_DATA && window.QUIZ_DATA.questions) || [];
+        const currentIndex = session.currentQuestionIndex;
+        const currentQ = questions[currentIndex];
+
+        if (!currentQ) {
+          finishQuiz();
+          return;
+        }
+
+        session.isAnswerLocked = false;
+
+        // HUD 업데이트
+        hudCurrentNum.textContent = currentIndex + 1;
+        hudScore.textContent = session.score;
+        hudCombo.textContent = session.combo;
+        hudLevel.textContent = `Lv.${session.getCurrentLevel()}`;
+
+        if (session.combo >= 2) {
+          hudComboBadge.classList.add('active-combo');
+        } else {
+          hudComboBadge.classList.remove('active-combo');
+        }
+
+        // 진행바 업데이트
+        const progressPercent = Math.round(((currentIndex + 1) / questions.length) * 100);
+        progressFill.style.width = `${progressPercent}%`;
+
+        // 질문 텍스트
+        questionBadge.textContent = `문제 ${currentIndex + 1}`;
+        questionText.textContent = currentQ.question;
+
+        // 피드백 패널 숨기기
+        feedbackPanel.setAttribute('hidden', '');
+
+        // 보기 버튼 상태 초기화
+        const badges = ['A', 'B', 'C', 'D'];
+        optionButtons.forEach((btn, idx) => {
+          btn.disabled = false;
+          btn.className = `btn-option opt-${idx}`;
+          const badgeEl = btn.querySelector('.option-badge');
+          const labelEl = btn.querySelector('.option-label');
+          const iconEl = btn.querySelector('.option-status-icon');
+
+          badgeEl.textContent = badges[idx];
+          labelEl.textContent = currentQ.options[idx] || '';
+          iconEl.textContent = '';
+        });
+      }
+
+      // --- 보기 클릭 처리 ---
+      optionsGrid.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn-option');
+        if (!btn || session.isAnswerLocked) return;
+
+        const selectedIndex = parseInt(btn.dataset.index, 10);
+        const questions = (window.QUIZ_DATA && window.QUIZ_DATA.questions) || [];
+        const currentQ = questions[session.currentQuestionIndex];
+        if (!currentQ) return;
+
+        const result = session.recordAnswer(selectedIndex);
+        if (!result) return;
+
+        // 모든 보기 잠금
+        optionButtons.forEach(b => b.disabled = true);
+
+        // 정답 버튼과 선택 버튼 표시
+        const correctBtn = optionButtons[currentQ.answer];
+        const selectedBtn = optionButtons[selectedIndex];
+
+        if (result.isCorrect) {
+          // 정답 연출
+          selectedBtn.classList.add('is-correct');
+          selectedBtn.querySelector('.option-status-icon').textContent = '⭕';
+
+          feedbackPanel.className = 'feedback-panel correct';
+          feedbackMascotSvg.innerHTML = getMascotSvgContent('happy');
+
+          if (result.bonusScore > 0) {
+            feedbackTitle.textContent = `정답입니다! +${result.earnedScore}점 (콤보 보너스 +${result.bonusScore}점! 🔥)`;
+          } else {
+            feedbackTitle.textContent = `정답입니다! +${result.earnedScore}점 🎉`;
+          }
+        } else {
+          // 오답 연출
+          selectedBtn.classList.add('is-wrong');
+          selectedBtn.querySelector('.option-status-icon').textContent = '❌';
+
+          correctBtn.classList.add('is-correct-target');
+          correctBtn.querySelector('.option-status-icon').textContent = '⭕ 정답';
+
+          feedbackPanel.className = 'feedback-panel wrong';
+          feedbackMascotSvg.innerHTML = getMascotSvgContent('encouraging');
+          feedbackTitle.textContent = '괜찮아요! 함께 알아볼까요? 😊';
+        }
+
+        // 해설 표시
+        feedbackExplanation.textContent = currentQ.explanation;
+        feedbackPanel.removeAttribute('hidden');
+
+        // HUD 실시간 점수·콤보 반영
+        hudScore.textContent = result.newScore;
+        hudCombo.textContent = result.currentCombo;
+        hudLevel.textContent = `Lv.${result.level}`;
+
+        if (result.currentCombo >= 2) {
+          hudComboBadge.classList.add('active-combo');
+        } else {
+          hudComboBadge.classList.remove('active-combo');
+        }
+
+        // 마지막 문제 버튼 문구 변경
+        if (session.currentQuestionIndex >= questions.length - 1) {
+          btnNext.textContent = '최종 결과 보기 🏆';
+        } else {
+          btnNext.textContent = '다음 문제 ➔';
+        }
+      });
+
+      // --- 다음 문제 버튼 핸들러 ---
+      btnNext.addEventListener('click', () => {
+        session.currentQuestionIndex += 1;
+        const questions = (window.QUIZ_DATA && window.QUIZ_DATA.questions) || [];
+
+        if (session.currentQuestionIndex < questions.length) {
+          renderQuestion();
+        } else {
+          finishQuiz();
+        }
+      });
+
+      // --- 퀴즈 완료 및 결과 집계 ---
+      function finishQuiz() {
+        const questions = (window.QUIZ_DATA && window.QUIZ_DATA.questions) || [];
+        const total = questions.length;
+        const correctCount = session.getCorrectCount();
+        const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+        const grade = window.calculateGrade(accuracy);
+        const level = session.getCurrentLevel();
+
+        // 텍스트 반영
+        resultStudentTag.textContent = `${session.getStudentTag()}의 최종 결과`;
+        resultGradeName.textContent = grade;
+        resultScore.textContent = `${session.score}점`;
+        resultCorrect.textContent = `${correctCount} / ${total}`;
+        resultAccuracy.textContent = `정답률 ${accuracy}%`;
+        resultCombo.textContent = `${session.maxCombo}연속`;
+        resultLevel.textContent = `Lv.${level}`;
+
+        // 등급별 설명
+        const gradeDescriptions = {
+          '챔피언': '모든 문제를 완벽하게 맞힌 최고의 디지털 시민 챔피언! 🏆',
+          '골드': '디지털 세상의 규칙을 아주 훌륭하게 실천하고 있어요! 🥇',
+          '실버': '디지털 안전과 배려를 바르게 알고 있는 멋진 학생이에요! 🥈',
+          '성장 중': '조금만 더 노력하면 챔피언이 될 수 있어요! 파이팅! 🌱',
+          '도전자': '퀴즈를 통해 디지털 시민성을 배우며 한 걸음 나아갔어요! 🏃'
+        };
+        resultGradeDesc.textContent = gradeDescriptions[grade] || '도전해 주셔서 감사해요!';
+
+        // 틀린 문제 복습 버튼 상태
+        const wrongAnswers = session.answers.filter(a => !a.isCorrect);
+        if (wrongAnswers.length === 0) {
+          btnReview.textContent = '모든 문제를 맞혔어요! 🌟';
+          btnReview.disabled = true;
+          btnReview.style.opacity = '0.7';
+        } else {
+          btnReview.textContent = `틀린 문제 ${wrongAnswers.length}개 다시 보기 🔍`;
+          btnReview.disabled = false;
+          btnReview.style.opacity = '1';
+        }
+
+        // 결과 화면 표시
+        showScreen('result');
+
+        // 선택적 Apps Script 전송 (SUBMISSION_ENDPOINT 가 설정된 경우에만 1회 자동 전송)
+        submissionStatusBox.innerHTML = '';
+        if (window.SUBMISSION_ENDPOINT && window.SUBMISSION_ENDPOINT.trim() !== '') {
+          session.submitResults((status, message) => {
+            submissionStatusBox.innerHTML = `<span class="submission-pill ${status}">${message}</span>`;
+          });
+        }
+      }
+
+      // --- 오답 복습 렌더링 ---
+      function renderReview() {
+        const questions = (window.QUIZ_DATA && window.QUIZ_DATA.questions) || [];
+        const wrongAnswers = session.answers.filter(a => !a.isCorrect);
+        reviewList.innerHTML = '';
+
+        if (wrongAnswers.length === 0) {
+          reviewList.innerHTML = `
+            <div class="review-empty">
+              🎉 틀린 문제가 하나도 없어요! 완벽한 디지털 시민 챔피언입니다!
+            </div>
+          `;
+          return;
+        }
+
+        wrongAnswers.forEach((ans) => {
+          const qObj = questions.find(q => q.id === ans.questionId);
+          if (!qObj) return;
+
+          const itemEl = document.createElement('div');
+          itemEl.className = 'review-item';
+
+          const myChoice = qObj.options[ans.selectedIndex] || '선택하지 않음';
+          const correctChoice = qObj.options[qObj.answer] || '';
+
+          itemEl.innerHTML = `
+            <div class="review-q-num">💡 문항 확인</div>
+            <div class="review-q-text">${escapeHtml(qObj.question)}</div>
+            <div class="review-answer-box">
+              <div class="review-row-wrong">❌ 내가 고른 답: ${escapeHtml(myChoice)}</div>
+              <div class="review-row-correct">⭕ 바른 정답: ${escapeHtml(correctChoice)}</div>
+            </div>
+            <div class="review-explanation"><strong>풀이:</strong> ${escapeHtml(qObj.explanation)}</div>
+          `;
+
+          reviewList.appendChild(itemEl);
+        });
+      }
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      // 복습 화면 이동 버튼
+      btnReview.addEventListener('click', () => {
+        renderReview();
+        showScreen('review');
+      });
+
+      // 복습에서 결과로 복귀
+      btnReviewBack.addEventListener('click', () => {
+        showScreen('result');
+      });
+
+      // 처음부터 다시 하기 핸들러 (반·번호 및 게임 상태 완전 초기화)
+      function restartQuiz() {
+        session.reset();
+        inputClass.value = '';
+        inputNumber.value = '';
+        clearErrors();
+        submissionStatusBox.innerHTML = '';
+        showScreen('intro');
+        inputClass.focus();
+      }
+
+      btnRestart.addEventListener('click', restartQuiz);
+      btnRestartFromReview.addEventListener('click', restartQuiz);
+
+    })();
+  </script>
+</body>
+</html>
